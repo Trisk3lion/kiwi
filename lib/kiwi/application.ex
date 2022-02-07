@@ -65,7 +65,7 @@ defmodule Kiwi.Application do
             {Task.Supervisor, name: Kiwi.Animator.TaskSupervisor},
             Kiwi.Animator,
             {Kiwi.Keyboard, %{}},
-            {Kiwi.OBS, obs_socket},
+            # {Kiwi.OBS, obs_socket},
             Kiwi.Server
         ]
     end
