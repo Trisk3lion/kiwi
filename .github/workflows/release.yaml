@@ -60,16 +60,16 @@ jobs:
       - name: Pack release
         run: tar -czf ./kiwi.tar.gz kiwi.fw
 
-      - name: Generate changelog
-        run: |
-          git log $(git tag --sort=-version:refname | head -n 2 | tail -n 1)...${{ github.ref }} --pretty=format:'<li> <a href="http://github.com/mrusme/kiwi/commit/%H">view commit &bull;</a> %s</li> ' --reverse > ${{ github.workflow }}-CHANGELOG.txt
-
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+      - name: Create Release
+        id: create_release
+        uses: ncipollo/release-action@v1
         with:
-          body_path: ${{ github.workflow }}-CHANGELOG.txt
-          files: |
+          tag: v0.${{ steps.clone_repo.outputs }}
+          name: kiwi_0.${{ steps.clone_repo.outputs }}
+          draft: false
+          prerelease: false
+          artifactErrorsFailBuild: true
+          artifacts: |
             kiwi.tar.gz
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          artifactContentType: application/gzip
+          token: ${{ secrets.GITHUB_TOKEN }}
