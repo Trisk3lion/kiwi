@@ -59,17 +59,39 @@ jobs:
 
       - name: Pack release
         run: tar -czf ./kiwi.tar.gz kiwi.fw
-
-      - name: Generate changelog
-        run: |
-          git log $(git tag --sort=-version:refname | head -n 2 | tail -n 1)...${{ github.ref }} --pretty=format:'<li> <a href="http://github.com/mrusme/kiwi/commit/%H">view commit &bull;</a> %s</li> ' --reverse > ${{ github.workflow }}-CHANGELOG.txt
-          
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        
+      # Upload everything
+      - name: Upload binaries
+        uses: actions/upload-artifact@v2
         with:
-          body_path: ${{ github.workflow }}-CHANGELOG.txt
-          files: |
-            kiwi.tar.gz
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: kiwi
+          path: ./kiwi.tar.gz
+
+      # Create release
+      - name: Create Release
+        id: create_release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: v0.${{ steps.clone_repo.outputs.VERSION }}
+          name: kiwi_0.${{ steps.clone_repo.outputs.VERSION }}
+          draft: false
+          prerelease: false
+          artifactErrorsFailBuild: true
+          artifacts: |
+            ./kiwi.tar.gz
+          artifactContentType: application/zip
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+#      - name: Generate changelog
+#        run: |
+#          git log $(git tag --sort=-version:refname | head -n 2 | tail -n 1)...${{ github.ref }} --pretty=format:'<li> <a href="http://github.com/mrusme/kiwi/commit/%H">view commit &bull;</a> %s</li> ' --reverse > ${{ github.workflow }}-CHANGELOG.txt
+          
+#      - name: Release
+#        uses: softprops/action-gh-release@v1
+#        if: startsWith(github.ref, 'refs/tags/')
+#        with:
+#          body_path: ${{ github.workflow }}-CHANGELOG.txt
+#          files: |
+#            kiwi.tar.gz
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
