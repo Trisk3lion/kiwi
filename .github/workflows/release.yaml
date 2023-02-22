@@ -77,8 +77,7 @@ jobs:
           draft: false
           prerelease: false
           artifactErrorsFailBuild: true
-          artifacts: |
-            ./kiwi.tar.gz
+          artifacts: "kiwi.zip"
           artifactContentType: application/zip
           token: ${{ secrets.GITHUB_TOKEN }}
 
