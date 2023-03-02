@@ -11,8 +11,8 @@ on:
   # JJGR: Change back to main from cicd
   # tag:
   # Allows you to run this workflow manually from the Actions tab
-  schedule:
-    - cron: "0 0 1 * *" # monthly
+  # schedule:
+  #  - cron: "0 0 1 * *" # monthly
   workflow_dispatch:
   
 jobs:
